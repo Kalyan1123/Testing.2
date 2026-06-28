@@ -5,3 +5,6 @@ formatDateTime(triggerOutputs()?['body/psquad_startdatetime'], 'yyyy-MM-ddTHH:mm
 formatDateTime(triggerOutputs()?['body/psquad_enddatetime'], 'yyyy-MM-ddTHH:mm:ss')
 
 Session created. Join here:
+
+
+Left = empty(triggerOutputs()?['body/_psquad_relatedlcm2_value']), operator = is equal to, right = false.
