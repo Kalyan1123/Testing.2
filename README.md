@@ -11,7 +11,7 @@ Left = empty(triggerOutputs()?['body/_psquad_relatedlcm2_value']), operator = is
 
 outputs('Get_Host_email')?['body/psquad_email']
 
-"
+/*"
 <div style="font-family:Segoe UI,Arial,sans-serif;color:#201f1e;">
 <h2 style="color:#0f6cbd;">Session Created Successfully</h2>
 <p>The following session has been scheduled. Details below.</p>
@@ -58,6 +58,7 @@ outputs('Get_Host_email')?['body/psquad_email']
 </p>
 </div>
 "
+*/
 
 <div style="font-family:Segoe UI,Arial,sans-serif;color:#201f1e;">
 <h2 style="color:#0f6cbd;">Session Created Successfully</h2>
