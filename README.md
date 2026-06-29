@@ -8,3 +8,5 @@ Session created. Join here:
 
 
 Left = empty(triggerOutputs()?['body/_psquad_relatedlcm2_value']), operator = is equal to, right = false.
+
+outputs('Get_Host_email')?['body/psquad_email']
