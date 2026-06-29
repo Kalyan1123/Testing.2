@@ -24,3 +24,7 @@
 
 
 triggerOutputs()?['body/psquad_technology@OData.Community.Display.V1.FormattedValue']
+
+convertFromUtc(triggerOutputs()?['body/psquad_startdatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')
+
+convertFromUtc(triggerOutputs()?['body/psquad_enddatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')
