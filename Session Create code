@@ -1,0 +1,23 @@
+<div style="font-family:Segoe UI,Arial,sans-serif;color:#201f1e;">
+<h2 style="color:#0f6cbd;">Session Created Successfully</h2>
+<p>The following session has been scheduled. Details below.</p>
+<table style="border-collapse:collapse;width:100%;">
+<tr style="background:#0f6cbd;color:#ffffff;">
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Session Name</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Technology</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Description</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Start Date &amp; Time</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">End Date &amp; Time</th>
+</tr>
+<tr>
+<td style="border:1px solid #ccc;padding:10px;">[EVENT_TITLE]</td>
+<td style="border:1px solid #ccc;padding:10px;">[TECHNOLOGY]</td>
+<td style="border:1px solid #ccc;padding:10px;">[DESCRIPTION]</td>
+<td style="border:1px solid #ccc;padding:10px;">[START]</td>
+<td style="border:1px solid #ccc;padding:10px;">[END]</td>
+</tr>
+</table>
+<p style="margin-top:20px;">
+<a href="[JOIN_URL]" style="background:#0f6cbd;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:4px;display:inline-block;">Join Teams Meeting</a>
+</p>
+</div>
