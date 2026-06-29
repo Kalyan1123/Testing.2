@@ -83,3 +83,7 @@ outputs('Get_Host_email')?['body/psquad_email']
 <a href="[JOIN_URL]" style="background:#0f6cbd;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:4px;display:inline-block;">Join Teams Meeting</a>
 </p>
 </div>
+
+
+
+outputs('Create_a_Teams_meeting')?['body/onlineMeeting/joinUrl']
