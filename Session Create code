@@ -34,3 +34,6 @@ replace(replace(replace(replace(replace(replace(triggerOutputs()?['body/psquad_t
 triggerOutputs()?['body/psquad_technology@OData.Community.Display.V1.FormattedValue']
 
 replace(replace(replace(replace(replace(replace(triggerOutputs()?['body/psquad_technology'], '361340000', 'Power BI'), '361340001', 'Power Apps'), '361340002', 'Power Automate'), '361340003', 'Dynamics 365'), '361340004', 'M365 Copilot'), ',', '; ')
+
+
+outputs('Create_a_Teams_meeting')?['body/onlineMeeting/joinUrl']
