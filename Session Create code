@@ -100,3 +100,13 @@ If(
     )
 );
 Refresh(Registrations)
+
+
+Modern Button → Fill property:
+If(Self.Text = "Unregister", Color.Crimson, RGBA(16, 124, 16, 1))
+Registered (Unregister showing) = red. Not registered (Register) = green.
+Also set Hover fill (so it doesn't flash a default on hover) → HoverFill:
+If(Self.Text = "Unregister", ColorValue("#A4262C"), RGBA(13, 100, 13, 1))
+Slightly darker shades of same colors.
+Text color stays white → Color:
+Color.White
