@@ -46,3 +46,20 @@ Unregister = delete the row, or keep row + set Status="Cancelled"?
 
 Delete = simple, Flow 3 triggers on delete. But no history.
 Status flip = keeps history (who cancelled), Flow 3 triggers on modify. Slightly more setup.
+
+
+If(
+    !IsEmpty(Filter(Registrations, Session = ThisItem && UserEmail = User().Email)),
+    "Unregister",
+    "Register"
+)
+
+
+If(
+    !IsEmpty(Filter(Registrations, Session = ThisItem && UserEmail = User().Email)),
+    Remove(Registrations, LookUp(Registrations, Session = ThisItem && UserEmail = User().Email)),
+    Patch(Registrations, Defaults(Registrations),
+        { Session: ThisItem, UserEmail: User().Email, Status: 'Status (Registrations)'.Registered }
+    )
+);
+Refresh(Registrations)
