@@ -37,3 +37,12 @@ replace(replace(replace(replace(replace(replace(triggerOutputs()?['body/psquad_t
 
 
 outputs('Create_a_Teams_meeting')?['body/onlineMeeting/joinUrl']
+
+
+
+
+
+Unregister = delete the row, or keep row + set Status="Cancelled"?
+
+Delete = simple, Flow 3 triggers on delete. But no history.
+Status flip = keeps history (who cancelled), Flow 3 triggers on modify. Slightly more setup.
