@@ -65,6 +65,8 @@ If(
 Refresh(Registrations)
 
 
+
+
 If(
     !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
     Remove(Registrations, LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
@@ -76,11 +78,25 @@ Refresh(Registrations)
 
 
 
-
-
-
 If(
     !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
     "Unregister",
     "Register"
 )
+
+
+
+
+If(
+    !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Remove(Registrations, LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Patch(Registrations, Defaults(Registrations),
+        { 
+            psquad_title: ThisItem.'Event Title' & " - " & User().Email,
+            Session: ThisItem, 
+            UserEmail: User().Email, 
+            'Status (psquad_status)': 'Status (Registrations)'.Registered 
+        }
+    )
+);
+Refresh(Registrations)
