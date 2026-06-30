@@ -63,3 +63,24 @@ If(
     )
 );
 Refresh(Registrations)
+
+
+If(
+    !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Remove(Registrations, LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Patch(Registrations, Defaults(Registrations),
+        { Session: ThisItem, UserEmail: User().Email, 'Status (psquad_status)': 'Status (Registrations)'.Registered }
+    )
+);
+Refresh(Registrations)
+
+
+
+
+
+
+If(
+    !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    "Unregister",
+    "Register"
+)
