@@ -88,3 +88,8 @@ PlaceholderExpression[TITLE]outputs('Get_Session')?['body/psquad_eventtitle'][TE
 Note: [JOIN] pulls the link SAVED on the session (Flow 1 stored it). Reuses same meeting — no new one. Correct.
 
 "item/psquad_usereventid": "@outputs('Block_User_Calendar')?['body/id']"
+
+
+
+
+PlaceholderExpression[TITLE]outputs('Get_Session')?['body/psquad_eventtitle'][TECH]replace(replace(replace(replace(replace(replace(outputs('Get_Session')?['body/psquad_technology'], '361340000', 'Power BI'), '361340001', 'Power Apps'), '361340002', 'Power Automate'), '361340003', 'Dynamics 365'), '361340004', 'M365 Copilot'), ',', '; ')[START]convertFromUtc(outputs('Get_Session')?['body/psquad_startdatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')[END]convertFromUtc(outputs('Get_Session')?['body/psquad_enddatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')[JOIN]outputs('Get_Session')?['body/psquad_joinurl']
