@@ -1,0 +1,88 @@
+Step 2 — Get Session (recheck)
+Your Row ID expression:
+triggerOutputs()?['body/_psquad_session_value']
+✅ correct. Action renamed Get_Session. Table = Events & Plans.
+
+Step 3 — Block user's calendar
+Office 365 Outlook → Create event (V4)
+
+Calendar id: Calendar
+Subject → Expression:
+
+outputs('Get_Session')?['body/psquad_eventtitle']
+
+Start time → Expression:
+
+formatDateTime(outputs('Get_Session')?['body/psquad_startdatetime'], 'yyyy-MM-ddTHH:mm:ss')
+
+End time → Expression:
+
+formatDateTime(outputs('Get_Session')?['body/psquad_enddatetime'], 'yyyy-MM-ddTHH:mm:ss')
+
+Time zone: (UTC) Coordinated Universal Time
+Required attendees → Expression:
+
+triggerOutputs()?['body/psquad_useremail']
+(only THIS user — not host/co-host)
+
+Body:
+
+You are registered. Join link inside the session invite.
+
+Show as: busy
+Is online meeting: DON'T set (leave off). We reuse the session's existing JoinUrl, not make a new meeting.
+
+Rename this action: Block_User_Calendar
+⚠️ Confirm psquad_eventtitle, psquad_startdatetime, psquad_enddatetime = real schema names in Events & Plans. Use what you had in Flow 1 (they're the same columns).
+
+Step 4 — Save the handle (for unregister)
+Dataverse → Update a row
+
+Table: Registrations
+Row ID → Expression:
+
+triggerOutputs()?['body/psquad_registrationid']
+⚠️ psquad_registrationid = guessed GUID of Registrations table. Confirm the primary-id name (like you found psquad_eventsplansid for Events). Swap if different.
+
+UserEventId field = dynamic Id (from Block_User_Calendar output)
+
+This stores the calendar event's ID → Flow 3 uses it to cancel only this user.
+
+Step 5 — Confirmation email
+Office 365 Outlook → Send an email (V2)
+
+To → Expression:
+
+triggerOutputs()?['body/psquad_useremail']
+
+Subject → Expression:
+
+concat('Registered: ', outputs('Get_Session')?['body/psquad_eventtitle'])
+
+Body → code view → paste:
+
+html<div style="font-family:Segoe UI,Arial,sans-serif;color:#201f1e;">
+<h2 style="color:#0f6cbd;">You're Registered!</h2>
+<p>You have successfully registered for the following session:</p>
+<table style="border-collapse:collapse;width:100%;">
+<tr style="background:#0f6cbd;color:#ffffff;">
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Session Name</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Technology</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">Start Date &amp; Time</th>
+<th style="border:1px solid #ccc;padding:10px;text-align:left;">End Date &amp; Time</th>
+</tr>
+<tr>
+<td style="border:1px solid #ccc;padding:10px;">[TITLE]</td>
+<td style="border:1px solid #ccc;padding:10px;">[TECH]</td>
+<td style="border:1px solid #ccc;padding:10px;">[START]</td>
+<td style="border:1px solid #ccc;padding:10px;">[END]</td>
+</tr>
+</table>
+<p style="margin-top:20px;">
+<a href="[JOIN]" style="background:#0f6cbd;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:4px;display:inline-block;">Join Teams Meeting</a>
+</p>
+</div>
+Replace placeholders (Expression tab each):
+PlaceholderExpression[TITLE]outputs('Get_Session')?['body/psquad_eventtitle'][TECH]replace(replace(replace(replace(replace(replace(outputs('Get_Session')?['body/psquad_technology'], '361340000', 'Power BI'), '361340001', 'Power Apps'), '361340002', 'Power Automate'), '361340003', 'Dynamics 365'), '361340004', 'M365 Copilot'), ',', '; ')[START]convertFromUtc(outputs('Get_Session')?['body/psquad_startdatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')[END]convertFromUtc(outputs('Get_Session')?['body/psquad_enddatetime'], 'India Standard Time', 'dd-MMM-yyyy hh:mm tt')[JOIN]outputs('Get_Session')?['body/psquad_joinurl']
+⚠️ psquad_joinurl = guessed schema of your JoinURL column in Events & Plans. Confirm (you named it JoinURL earlier). Swap if different.
+Note: [JOIN] pulls the link SAVED on the session (Flow 1 stored it). Reuses same meeting — no new one. Correct.
