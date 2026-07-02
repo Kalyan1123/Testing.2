@@ -133,3 +133,38 @@ Build → test unregister. Report:
 1. Flow green?
 2. Calendar event gone?
 3. Cancel email got?
+
+
+
+
+Name has spaces + hyphen. App `.Run` needs different form.
+
+In app, type:
+```
+'User Unregister - Cancelled'.Run(
+```
+
+Quotes around name. IntelliSense shows exact form when you type `'User`.
+
+**Button OnSelect — corrected:**
+```
+If(
+    !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    'User Unregister - Cancelled'.Run(
+        LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email).UserEventID,
+        User().Email,
+        ThisItem.'Event Title'
+    );
+    Remove(Registrations, LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Patch(Registrations, Defaults(Registrations),
+        { psquad_title: ThisItem.'Event Title' & " - " & User().Email, Session: ThisItem, UserEmail: User().Email, 'Status (psquad_status)': 'Status (Registrations)'.Registered }
+    )
+);
+Refresh(Registrations)
+```
+
+Add flow to app first: Power Automate pane → add → `User Unregister - Cancelled`. Then `.Run` resolves.
+
+`.UserEventID` — match IntelliSense. Type `LookUp(...).` → pick real field.
+
+Build → test unregister. Report green/red + calendar gone + email got.
