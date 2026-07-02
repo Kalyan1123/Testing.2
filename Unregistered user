@@ -1,0 +1,62 @@
+Build Flow 3. 4 steps.
+
+**Name:** `User Unregister - Cancel`
+**Type:** Automated cloud flow
+
+**Step 1 — Trigger**
+Dataverse → When a row is added, modified or deleted
+- Change type: **Deleted**
+- Table: **Registrations**
+- Scope: **Organization**
+
+**Step 2 — Get_Session**
+Dataverse → Get a row by ID
+- Table: **Events & Plans**
+- Row ID:
+```
+triggerOutputs()?['body/_psquad_session_value']
+```
+- Rename action → `Get_Session`
+
+**Step 3 — Condition + Delete**
+Condition:
+- Left:
+```
+empty(triggerOutputs()?['body/psquad_usereventid'])
+```
+- Operator: **is equal to**
+- Right: `false`
+
+If yes → Office 365 Outlook → **Delete event (V4)**:
+- Calendar id: **Calendar**
+- Event id:
+```
+triggerOutputs()?['body/psquad_usereventid']
+```
+
+**Step 4 — Cancel email** (inside If yes, after delete)
+Office 365 Outlook → Send an email (V2)
+- To:
+```
+triggerOutputs()?['body/psquad_useremail']
+```
+- Subject:
+```
+concat('Cancelled: ', outputs('Get_Session')?['body/psquad_eventtitle'])
+```
+- Body:
+```
+Your registration has been cancelled. The session has been removed from your calendar.
+```
+
+---
+
+Build. Then test → unregister in app.
+
+Report 4 things:
+1. Flow green or red?
+2. Trigger data — `psquad_usereventid` + `psquad_useremail` filled, or EMPTY?
+3. User calendar event gone?
+4. Cancel email received?
+
+**Watch #2.** Delete trigger may return only row ID, columns empty. If empty → switch to Status-flip method. Test tells us.
