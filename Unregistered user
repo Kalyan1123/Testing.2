@@ -60,3 +60,76 @@ Report 4 things:
 4. Cancel email received?
 
 **Watch #2.** Delete trigger may return only row ID, columns empty. If empty → switch to Status-flip method. Test tells us.
+
+
+Confirmed the gotcha. Delete trigger gives NO columns — only row id. So `_psquad_session_value` empty → Get_Session dies. UserEventId + UserEmail also empty. Delete-trigger approach = dead for Flow 3.
+
+**Fix: trigger Flow 3 from app button instead. Pass the 3 values while row still alive.**
+
+Read UserEventId, email, title from row BEFORE delete → hand to flow → flow cancels calendar + emails.
+
+---
+
+**REBUILD Flow 3**
+
+1. Delete current **trigger** (When row deleted) + delete **Get_Session** (not needed now)
+2. Add trigger → **PowerApps (V2)**
+3. In trigger, add 3 text inputs:
+   - `EventId`
+   - `UserEmail`
+   - `SessionTitle`
+
+**Step — Delete event (V2)**
+- Calendar id: **Calendar**
+- Event id → dynamic content → **EventId** (from trigger)
+
+**Step — Send email (V2)**
+- To → dynamic → **UserEmail**
+- Subject → Expression:
+
+```
+concat('Cancelled: ', triggerBody()['text_2'])
+```
+(or pick **SessionTitle** from dynamic content — easier)
+- Body:
+```
+Your registration has been cancelled. The session has been removed from your calendar.
+```
+
+Save. Note flow name.
+
+---
+
+**CHANGE app button — OnSelect full rewrite:**
+```
+If(
+    !IsEmpty(Filter(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    UserUnregisterCancel.Run(
+        LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email).UserEventID,
+        User().Email,
+        ThisItem.'Event Title'
+    );
+    Remove(Registrations, LookUp(Registrations, Session.psquad_eventsplansid = ThisItem.psquad_eventsplansid && UserEmail = User().Email)),
+    Patch(Registrations, Defaults(Registrations),
+        { psquad_title: ThisItem.'Event Title' & " - " & User().Email, Session: ThisItem, UserEmail: User().Email, 'Status (psquad_status)': 'Status (Registrations)'.Registered }
+    )
+);
+Refresh(Registrations)
+```
+
+Register branch unchanged. Unregister branch now: call flow (pass UserEventID + email + title) → THEN remove row.
+
+---
+
+**Add flow to app first:** Power Automate pane → add → pick `UserUnregisterCancel`. Then `.Run` works. Name in code must match what app shows.
+
+**Field name check:** `.UserEventID` — match IntelliSense. Type `LookUp(...).` → pick real field.
+
+---
+
+Flow 1 + Flow 2 = untouched. Only Flow 3 trigger swapped.
+
+Build → test unregister. Report:
+1. Flow green?
+2. Calendar event gone?
+3. Cancel email got?
