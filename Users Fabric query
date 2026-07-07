@@ -20,3 +20,33 @@ Please confirm the activity type and where the table lives so I can pin down the
 Notes for you:
 Fixed vs image draft. Two things changed.
 Code: dropped dbo. prefix. That's Warehouse syntax. Breaks on Lakehouse Spark. Bare name correct.
+
+
+
+
+
+
+
+**Real problem:** Notebook activity's **Connection** field bound to a **Lakehouse** connection (via library variable). That field expects an identity (Service Principal / Workspace Identity / user), not a data connection. Lakehouse type invalid there → error.
+
+**Why other pipeline works:** Delete Data activity accepts Lakehouse connection. Notebook activity doesn't. Same variable, different rules.
+
+**Tell user to do (pick one):**
+1. Clear the Connection field → notebook runs as user. Simplest.
+2. Or set Connection to SPN/WI connection.
+
+Lakehouse stays inside notebook, not in Connection field.
+
+**Check with user:** After fix, does pipeline run clean? That's it. No other questions left.
+
+**Message to paste:**
+
+---
+
+Found it. The Notebook activity's Connection field is set to a Lakehouse connection through your library variable. That field defines the identity the notebook runs as (Service Principal / Workspace Identity / user) — not a data source. A Lakehouse connection isn't valid there, hence "The datasource type Lakehouse is invalid."
+
+It works in your other pipeline because Delete Data activities accept Lakehouse connections. Notebook activities don't.
+
+Fix: clear the Connection field (notebook runs as the invoking user), or set it to a Service Principal / Workspace Identity connection. The Lakehouse is already attached inside the notebook — that's all it needs.
+
+Try that and let me know if the pipeline runs clean.
