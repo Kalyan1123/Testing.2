@@ -1,0 +1,22 @@
+Thanks for sharing the error. Since the notebook runs fine on its own, the issue is with the "Delete Staging Table" activity in the pipeline, not the notebook.
+Two quick things to confirm first:
+
+What type of activity is "Delete Staging Table" — Script, Copy, Delete, or Notebook?
+Is the staging table in a Lakehouse or a Warehouse?
+
+What's likely happening:
+If "Delete Staging Table" is a Script activity, that's the cause. Script activities in Fabric can't connect directly to a Lakehouse — they only support Warehouse, KQL, and SQL connections. The notebook works because it reaches the Lakehouse through Spark, which is a different path.
+There's also a second catch: even routed through the Lakehouse SQL analytics endpoint, that endpoint is read-only. DROP and DELETE won't run against Lakehouse tables there. So reselecting or recreating the connection won't fix it.
+Suggested fix:
+Remove the Script activity and handle the cleanup inside a Notebook activity instead.
+Drop the table:
+pythonspark.sql("DROP TABLE IF EXISTS staging_table")
+Or clear the rows only:
+pythonspark.sql("DELETE FROM staging_table")
+Use the bare table name for a Lakehouse. Add schema. only if your Lakehouse is schema-enabled (use the real schema name, not dbo).
+If the table is actually in a Warehouse, the Script activity is fine — just repoint its connection from the Lakehouse to the Warehouse.
+Please confirm the activity type and where the table lives so I can pin down the exact cause.
+
+Notes for you:
+Fixed vs image draft. Two things changed.
+Code: dropped dbo. prefix. That's Warehouse syntax. Breaks on Lakehouse Spark. Bare name correct.
