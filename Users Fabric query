@@ -50,3 +50,7 @@ It works in your other pipeline because Delete Data activities accept Lakehouse 
 Fix: clear the Connection field (notebook runs as the invoking user), or set it to a Service Principal / Workspace Identity connection. The Lakehouse is already attached inside the notebook — that's all it needs.
 
 Try that and let me know if the pipeline runs clean.
+
+
+Great news. Quick confirmation for the record: what change did you make — cleared the Connection field, or switched it to a Service Principal / Workspace Identity connection? Good to document the fix in case it comes up again.
+If the staging table deletion worked as expected, we can consider this resolved.
