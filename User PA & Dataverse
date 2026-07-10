@@ -1,0 +1,19 @@
+**Flows**
+1. Prod → Solutions → open solution → each flow → **Turn off** → **Turn on**
+2. Test trigger. Still dead? →
+3. Check Connection References → point to **prod** connections, not dev
+4. Check flow **Owner** → active, licensed user
+5. Turn on **child flows first**, then parent
+6. Check **DLP policy** in prod → connector not blocked
+7. Check Dataverse trigger **Scope** = Organization (not User)
+
+**Autonumber (EID)**
+8. Prod → Tables → your table → Columns → **EID** → Edit
+9. Check if table already has records
+   - Empty → Seed = `300000`
+   - Has records → Seed = **max existing number + 1**
+10. Save. Create test record. Confirm format = `300000`, not `001000`
+
+**Process**
+11. Add "Set autonumber seed after import" to deploy checklist
+12. Repeat step 8–10 for every future environment
