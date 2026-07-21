@@ -54,3 +54,13 @@ Try that and let me know if the pipeline runs clean.
 
 Great news. Quick confirmation for the record: what change did you make — cleared the Connection field, or switched it to a Service Principal / Workspace Identity connection? Good to document the fix in case it comes up again.
 If the staging table deletion worked as expected, we can consider this resolved.
+
+
+
+If(
+    IsBlank(ThisItem.'Related LCM 2'.'LCM Name'),
+    "-",
+    ThisItem.'Related LCM 2'.'LCM Name'
+)
+
+!IsBlank(ThisItem.'Related LCM 2'.'LCM Name')
