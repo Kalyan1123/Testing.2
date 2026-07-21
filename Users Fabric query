@@ -64,3 +64,18 @@ If(
 )
 
 !IsBlank(ThisItem.'Related LCM 2'.'LCM Name')
+
+
+
+If(
+    IsBlank(ThisItem.'Related LCM 2'.Email),
+    Blank(),
+    IfError(
+        If(
+            Office365Users.UserPhotoMetadata(ThisItem.'Related LCM 2'.Email).HasPhoto,
+            Office365Users.UserPhotoV2(ThisItem.'Related LCM 2'.Email),
+            'User, person, man, human'
+        ),
+        'User, person, man, human'
+    )
+)
