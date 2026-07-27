@@ -1,0 +1,9 @@
+If(
+    !IsBlank(ThisItem.'Assign to'.Email),
+    [
+        {
+            DisplayName: ThisItem.'Assign to'.DisplayName,
+            Mail: ThisItem.'Assign to'.Email
+        }
+    ]
+)
