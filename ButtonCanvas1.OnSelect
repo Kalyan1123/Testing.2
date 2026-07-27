@@ -1,0 +1,48 @@
+If(
+    IsBlank(
+        LookUp(
+            colSmartForm,
+            ID = ThisItem.ID
+        )
+    ),
+    Collect(
+        colSmartForm,
+        ThisItem
+    )
+);
+UpdateIf(
+    colSmartForm,
+    ID = ThisItem.ID,
+    {
+        Comment: AICommentTxt.Text,
+        'Assign to':
+            If(
+                IsBlank(AssigntoCombo.Selected.Mail),
+                Blank(),
+                {
+                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                    Claims: "i:0#.f|membership|" & Lower(AssigntoCombo.Selected.Mail),
+                    Department: "",
+                    DisplayName: AssigntoCombo.Selected.DisplayName,
+                    Email: AssigntoCombo.Selected.Mail,
+                    JobTitle: "",
+                    Picture: ""
+                }
+            ),
+        'Sign off': SignOffCheck.Value,
+        'Sign off by':
+            If(
+                SignOffCheck.Value = true,
+                {
+                    '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                    Claims: "i:0#.f|membership|" & Lower(User().Email),
+                    Department: "",
+                    DisplayName: User().FullName,
+                    Email: User().Email,
+                    JobTitle: "",
+                    Picture: ""
+                },
+                Blank()
+            )
+    }
+)
