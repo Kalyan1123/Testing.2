@@ -1,0 +1,25 @@
+IfError(
+    Patch(
+        'Smart Form',
+        ShowColumns(
+            colSmartForm,
+            Comment,
+            'Assign to',
+            'Sign off',
+            'Sign off by',
+            ID
+        )
+    );
+    Refresh('Smart Form');
+    Clear(colSmartForm);
+    Notify(
+        "Saved successfully",
+        NotificationType.Success,
+        5000
+    ),
+    Notify(
+        "Save failed: " & FirstError.Message,
+        NotificationType.Error,
+        8000
+    )
+)
