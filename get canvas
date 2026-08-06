@@ -24,3 +24,7 @@ ClearCollect(
 
 
 "Cues: " & CountRows(colCues) & " | Chars: " & Len(varVtt)
+
+
+
+Set(varNow, Video1.Time)
