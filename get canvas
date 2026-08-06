@@ -28,3 +28,54 @@ ClearCollect(
 
 
 Set(varNow, Video1.Time)
+
+
+
+
+1. Timer (drives sync)
+
+Insert → Input → Timer. Put on Selected Video screen.
+
+Duration: 300
+Repeat: true
+AutoStart: true
+Visible: false
+OnTimerEnd:
+Set(varNow, Video1.Time)
+2. Transcript gallery
+
+Insert → Blank vertical gallery. Place right of video or below.
+
+Items:
+
+Sort(colCues, StartSec, Ascending)
+
+Gallery props:
+
+TemplateSize: 60
+ShowScrollbar: true
+
+Insert one Label inside the gallery template:
+
+Text: ThisItem.CueText
+AutoHeight: true
+Width: gallery width minus 30
+Size: 12
+Fill (highlight active line):
+If(
+    ThisItem.StartSec <= varNow && ThisItem.EndSec >= varNow,
+    RGBA(0, 120, 212, 0.15),
+    Color.Transparent
+)
+3. Click-to-seek
+
+Gallery OnSelect:
+
+Set(varSeek, ThisItem.StartSec);
+Set(varReset, true);
+Set(varReset, false)
+
+On Video1:
+
+StartTime: varSeek
+Reset: varReset
