@@ -19,3 +19,9 @@ item()?['Owner Email']
 trim(coalesce(item()?['Compliance Status'], ''))
 
 Compliance Status eq 'Non-Compliant'
+
+
+@and(
+  equals(trim(coalesce(item()?['Compliance Status'],'')), 'Non-Compliant'),
+  not(empty(trim(coalesce(item()?['Owner Email'],''))))
+)
