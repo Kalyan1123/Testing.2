@@ -69,3 +69,9 @@ If(
 )
 
 Kill borders on both labels — YouTube look is borderless.
+
+
+
+Height = lblCueText.Height
+Y = lblCueText.Y
+VerticalAlign = VerticalAlign.Top
