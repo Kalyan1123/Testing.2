@@ -79,3 +79,53 @@ On Video1:
 
 StartTime: varSeek
 Reset: varReset
+
+
+
+Two things to build. And one diagnostic — because "highlight stops after seeking" may be the highlight failing OR just being off-screen where you can't see it. Auto-scroll fixes both cases anyway.
+
+1. Caption overlay on video
+
+Insert → Text label. Place over bottom of video.
+
+Text:
+
+LookUp(colCues, StartSec <= varNow && EndSec >= varNow).CueText
+
+Props:
+
+X Video1.X + 20
+Y Video1.Y + Video1.Height - 90
+Width Video1.Width - 40
+Height 60
+Align Center
+Size 14, Color White
+Fill RGBA(0,0,0,0.6)
+AutoHeight false
+
+Right-click → Reorder → Bring to front. Else video covers it.
+
+2. Auto-scroll — use a time window, not scrolling
+
+Power Apps has no scroll-to-item function. Default doesn't reliably scroll. Real fix: stop showing all 199 cues. Show only cues near current time. Gallery never needs scrolling — active line is always in view.
+
+Gallery Items:
+
+Filter(
+    colCues,
+    EndSec >= varNow - 10 && StartSec <= varNow + 120
+)
+
+Shows ~10s behind, ~2min ahead. Rolls forward automatically as video plays. Seek anywhere → gallery jumps to that region instantly.
+
+Tune: bigger 120 = more upcoming lines visible.
+
+Click-to-seek still works unchanged.
+
+3. Diagnostic — run this before assuming anything broke
+
+Temp label, Text:
+
+varNow & " | " & Video1.Time
+
+Play → drag scrubber to 10:00 → watch both numbers.
