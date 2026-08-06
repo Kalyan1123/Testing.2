@@ -13,3 +13,5 @@ If(
 
 
 "https://Organization.sharepoint.com/teams/powerhub/Shared%20Documents/Private%20Documents/Events/Transcription%20files/Bytesize/test/Approved%20Connectors%20DLP%20Policies.vtt"
+
+item()?['Owner Email']
