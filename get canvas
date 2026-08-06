@@ -1,1 +1,22 @@
 base64ToString(outputs('Get_file_content_using_path')?['body/$content'])
+
+
+
+Set(
+    varVtt,
+    GetTranscript.Run(Substitute(locSelectedVideo.Name, ".mp4", ".vtt")).vtttext
+);
+ClearCollect(
+    colCues,
+    ForAll(
+        MatchAll(
+            Substitute(varVtt, Char(13), ""),
+            "(?<h>\d+):(?<m>\d{2}):(?<s>\d{2}\.\d{3})\s*-->\s*(?<h2>\d+):(?<m2>\d{2}):(?<s2>\d{2}\.\d{3})[^\n]*\n(?<txt>[^\n]+)"
+        ) As c,
+        {
+            StartSec: Value(c.h)*3600 + Value(c.m)*60 + Value(c.s),
+            EndSec:   Value(c.h2)*3600 + Value(c.m2)*60 + Value(c.s2),
+            CueText:  c.txt
+        }
+    )
+);
