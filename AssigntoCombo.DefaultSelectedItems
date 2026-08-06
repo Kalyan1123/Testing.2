@@ -17,3 +17,5 @@ If(
 item()?['Owner Email']
 
 trim(coalesce(item()?['Compliance Status'], ''))
+
+Compliance Status eq 'Non-Compliant'
