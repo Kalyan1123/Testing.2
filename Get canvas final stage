@@ -1,0 +1,71 @@
+1. Caption label behind video — z-order
+
+Tree view: control lower in the list = renders on top.
+
+Fix: drag the label BELOW Container8_12 in tree view. Or right-click label → Reorder → Bring to front.
+
+Position (label is currently offset left — Video1 sits inside a container):
+
+X = Container8_12.X + Video1.X + 20
+Y = Container8_12.Y + Video1.Y + Video1.Height - 100
+Width = Video1.Width - 40
+Height = 60
+2. Fullscreen — hard limit, no workaround
+
+The expand button triggers browser-native fullscreen. The video element leaves the app's DOM layer entirely. Nothing in Power Apps can paint over it. No z-order, no reorder, no PCF trick.
+
+Only real option: build your own expand button, hide nothing, just resize inside the app.
+
+Button OnSelect:
+
+Set(varBig, !varBig)
+
+Video1:
+
+Width = If(varBig, App.Width - 40, 700)
+Height = If(varBig, App.Height - 200, 400)
+
+Caption label formulas already reference Video1.Width/Height → follows automatically.
+
+Users must use YOUR button, not the native one. Native fullscreen = captions gone.
+
+3. YouTube-style transcript panel
+
+Gallery Items (window = auto-scroll):
+
+Filter(
+    colCues,
+    EndSec >= varNow - 10 && StartSec <= varNow + 150
+)
+
+Gallery TemplateSize 50.
+
+Timestamp label (left chip):
+
+Text:
+Text(Int(ThisItem.StartSec/60), "00") & ":" & Text(Mod(RoundDown(ThisItem.StartSec,0), 60), "00")
+X 10, Width 50, Height 26
+Fill RGBA(232, 240, 254, 1)
+Color RGBA(26, 115, 232, 1)
+Size 11, Align Center
+
+Text label (right):
+
+Text ThisItem.CueText
+X 70, Width Parent.Width - 90
+AutoHeight true, Size 12
+BorderThickness 0
+Fill:
+If(
+    ThisItem.StartSec <= varNow && ThisItem.EndSec >= varNow,
+    RGBA(240, 240, 240, 1),
+    Color.Transparent
+)
+FontWeight:
+If(
+    ThisItem.StartSec <= varNow && ThisItem.EndSec >= varNow,
+    FontWeight.Semibold,
+    FontWeight.Normal
+)
+
+Kill borders on both labels — YouTube look is borderless.
