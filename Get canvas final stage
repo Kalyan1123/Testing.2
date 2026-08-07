@@ -75,3 +75,24 @@ Kill borders on both labels — YouTube look is borderless.
 Height = lblCueText.Height
 Y = lblCueText.Y
 VerticalAlign = VerticalAlign.Top
+
+
+Wrap existing formulas in If:
+
+Width:
+
+If(
+    varBig,
+    Parent.Width - 20,
+    Parent.Width - relatedvideogallery.Width - 10
+)
+
+Height:
+
+If(
+    varBig,
+    Parent.Height - 100,
+    Parent.Height * 0.6
+)
+
+Small mode = unchanged. Big mode = fills parent.
