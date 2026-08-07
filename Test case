@@ -29,3 +29,10 @@ Width = If(varBig, App.Width - 80, Video1.Width - 40)
 Watch: if Container8_12 sits inside ANOTHER container, it clips too — expand that one the same way. Check tree view nesting.
 
 If container has auto-layout on (vertical/horizontal), X/Y are ignored. Set Layout to Manual, or wrap differently. Tell me if it fights you.
+
+
+
+X = If(varBig, 0, [current])
+Y = If(varBig, 0, [current])
+Width  = If(varBig, App.Width, [current])
+Height = If(varBig, App.Height, [current])
