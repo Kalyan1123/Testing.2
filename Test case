@@ -1,0 +1,31 @@
+Container clips children. Video can't grow past Container8_12. Must expand the container too.
+
+Container8_12:
+
+X = If(varBig, 0, [current X])
+Y = If(varBig, 0, [current Y])
+Width  = If(varBig, App.Width, [current Width])
+Height = If(varBig, App.Height, [current Height])
+
+Keep your existing values in the false slots.
+
+Video1:
+
+X = If(varBig, 0, [current X])
+Y = If(varBig, 0, [current Y])
+Width  = If(varBig, Parent.Width, Parent.Width - relatedvideogallery.Width - 10)
+Height = If(varBig, Parent.Height, Parent.Height * 0.6)
+
+Hide everything else — Visible on gallery, related videos, title, likes, breadcrumb:
+
+!varBig
+
+Caption label — must escape container too. Reference App directly when big:
+
+X = If(varBig, 40, Container8_12.X + Video1.X + 20)
+Y = If(varBig, App.Height - 140, Container8_12.Y + Video1.Y + Video1.Height - 100)
+Width = If(varBig, App.Width - 80, Video1.Width - 40)
+
+Watch: if Container8_12 sits inside ANOTHER container, it clips too — expand that one the same way. Check tree view nesting.
+
+If container has auto-layout on (vertical/horizontal), X/Y are ignored. Set Layout to Manual, or wrap differently. Tell me if it fights you.
