@@ -36,3 +36,50 @@ X = If(varBig, 0, [current])
 Y = If(varBig, 0, [current])
 Width  = If(varBig, App.Width, [current])
 Height = If(varBig, App.Height, [current])
+
+Toggle var + Visible bindings.
+
+1. Button
+
+Insert → Button. Place above transcript gallery.
+
+Text:
+If(varShowTranscript, "Hide transcript", "Show transcript")
+OnSelect:
+Set(varShowTranscript, !varShowTranscript)
+YouTube look: Fill RGBA(232, 240, 254, 1), Color RGBA(26, 115, 232, 1), BorderThickness 0, RadiusTopLeft/etc 20, Height 36, Size 12
+2. Gallery Visible
+
+Transcript gallery:
+
+varShowTranscript && !varBig
+
+Timestamp label + cue label inside template need nothing — hide the gallery, they go too.
+
+3. Default state
+
+Selected Video screen OnVisible — add near the top:
+
+Set(varShowTranscript, false);
+
+Closed on load, like YouTube. Want it open by default → true.
+
+4. Video reclaims space
+
+Video1 Width:
+
+If(
+    varBig,
+    Parent.Width,
+    Parent.Width - If(varShowTranscript, relatedvideogallery.Width + 10, 0)
+)
+
+Panel hidden → video widens. Panel shown → shrinks back.
+
+Adjust relatedvideogallery → whichever control's width you're actually subtracting.
+
+Note: button itself should hide in expanded mode. Visible:
+
+!varBig
+
+
