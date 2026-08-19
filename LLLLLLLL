@@ -1,0 +1,5 @@
+#	Property	Set to
+1	DataCardValue8.Items	Choices([@'Events & Plans'].'Delivery Mode')
+2	Delivery Mode_DataCard1.DataField	"psquad_deliverymode" (logical name)
+3	Delivery Mode_DataCard1.Update	DataCardValue8.Selected
+4	DataCardValue8.DefaultSelectedItems	[Parent.Default] (already correct)
