@@ -1,0 +1,1300 @@
+# =============================================================
+# Regional Meeting Notes - Power Apps Canvas YAML
+# Canvas: 1366 x 768. Existing left nav assumed 0-200px.
+# All content lives in conPageRoot at X=220.
+#
+# PASTE ORDER: Block 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6
+# Paste each block separately. Do NOT paste whole file at once.
+# =============================================================
+
+
+# =============================================================
+# BLOCK 0 - HIDDEN LOAD BUTTON  (paste onto screen root first)
+# =============================================================
+- btnLoadMonth:
+    Control: Classic/Button@2.2.0
+    Properties:
+      X: =0
+      Y: =0
+      Width: =1
+      Height: =1
+      Visible: =false
+      Text: =""
+      OnSelect: |
+        =Set(
+            varGridStart,
+            DateAdd(
+                varMonthAnchor,
+                -(Weekday(varMonthAnchor, StartOfWeek.Sunday) - 1),
+                TimeUnit.Days
+            )
+        );
+        Set(varGridEnd, DateAdd(varGridStart, 41, TimeUnit.Days));
+        ClearCollect(
+            colMeetings,
+            Filter(
+                'Regional Meetings',
+                Region = varRegion,
+                MeetingDate >= varGridStart,
+                MeetingDate <= varGridEnd
+            )
+        );
+        Clear(colActions);
+        ForAll(
+            colMeetings As M,
+            Collect(colActions, M.'Meeting Action Items')
+        )
+
+
+# =============================================================
+# BLOCK 1 - PAGE ROOT + HEADER CARD
+# =============================================================
+- conPageRoot:
+    Control: GroupContainer@1.3.0
+    Variant: ManualLayout
+    Properties:
+      X: =220
+      Y: =0
+      Width: =1146
+      Height: =768
+      Fill: =gblTheme.PageBg
+    Children:
+      - conHeaderCard:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            X: =16
+            Y: =16
+            Width: =1114
+            Height: =76
+            Fill: =gblTheme.Card
+            BorderColor: =gblTheme.Border
+            BorderThickness: =1
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+          Children:
+            - icoHeaderCal:
+                Control: Icon@2.5.0
+                Variant: Calendar
+                Properties:
+                  X: =24
+                  Y: =18
+                  Width: =24
+                  Height: =24
+                  Icon: =Icon.CalendarBlank
+                  Color: =gblTheme.Primary
+            - lblScreenTitle:
+                Control: Label@2.5.1
+                Properties:
+                  X: =56
+                  Y: =12
+                  Width: =420
+                  Height: =32
+                  Text: ="Regional Meeting Notes"
+                  Color: =gblTheme.Primary
+                  Size: =18
+                  FontWeight: =FontWeight.Bold
+                  Font: =Font.'Segoe UI'
+                  VerticalAlign: =VerticalAlign.Middle
+            - lblScreenSub:
+                Control: Label@2.5.1
+                Properties:
+                  X: =58
+                  Y: =42
+                  Width: =520
+                  Height: =20
+                  Text: ="Centrally manage meeting notes and action items from MS Teams."
+                  Color: =gblTheme.TextMuted
+                  Size: =10
+                  Font: =Font.'Segoe UI'
+                  VerticalAlign: =VerticalAlign.Middle
+            - icoSearch:
+                Control: Icon@2.5.0
+                Variant: Search
+                Properties:
+                  X: =636
+                  Y: =28
+                  Width: =16
+                  Height: =16
+                  Icon: =Icon.Search
+                  Color: =gblTheme.TextFaint
+            - txtSearchNotes:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  X: =656
+                  Y: =22
+                  Width: =248
+                  Height: =32
+                  Default: =""
+                  HintText: ="Search notes..."
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+                  RadiusTopLeft: =6
+                  RadiusTopRight: =6
+                  RadiusBottomLeft: =6
+                  RadiusBottomRight: =6
+                  Size: =10
+                  Font: =Font.'Segoe UI'
+                  OnChange: =Set(varSearch, Self.Text)
+            - icoPin:
+                Control: Icon@2.5.0
+                Variant: Location
+                Properties:
+                  X: =924
+                  Y: =28
+                  Width: =16
+                  Height: =16
+                  Icon: =Icon.Location
+                  Color: =gblTheme.TextMuted
+            - drpRegion:
+                Control: Classic/DropDown@2.3.1
+                Properties:
+                  X: =946
+                  Y: =22
+                  Width: =148
+                  Height: =32
+                  Items: =Choices('Regional Meetings'.Region)
+                  Default: =varRegion
+                  Size: =10
+                  Font: =Font.'Segoe UI'
+                  BorderColor: =gblTheme.Border
+                  Color: =gblTheme.TextDark
+                  OnChange: |
+                    =Set(varRegion, Self.Selected);
+                    Select(btnLoadMonth)
+
+
+# =============================================================
+# BLOCK 2 - CALENDAR CARD + MONTH NAV STRIP
+# Paste INSIDE conPageRoot
+# =============================================================
+- conCalendarCard:
+    Control: GroupContainer@1.3.0
+    Variant: ManualLayout
+    Properties:
+      X: =16
+      Y: =104
+      Width: =1114
+      Height: =600
+      Fill: =gblTheme.Card
+      BorderColor: =gblTheme.Border
+      BorderThickness: =1
+      RadiusTopLeft: =8
+      RadiusTopRight: =8
+      RadiusBottomLeft: =8
+      RadiusBottomRight: =8
+    Children:
+      - recCalHeaderStrip:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =1114
+            Height: =64
+            Fill: =gblTheme.HeaderStrip
+      - cirPrevBg:
+          Control: Circle@2.3.0
+          Properties:
+            X: =20
+            Y: =18
+            Width: =28
+            Height: =28
+            Fill: =gblTheme.Card
+            BorderColor: =gblTheme.Border
+            BorderThickness: =1
+      - icoPrevMonth:
+          Control: Icon@2.5.0
+          Variant: ChevronLeft
+          Properties:
+            X: =28
+            Y: =26
+            Width: =12
+            Height: =12
+            Icon: =Icon.ChevronLeft
+            Color: =gblTheme.Primary
+            OnSelect: |
+              =Set(varMonthAnchor, DateAdd(varMonthAnchor, -1, TimeUnit.Months));
+              Select(btnLoadMonth)
+      - lblMonthYear:
+          Control: Label@2.5.1
+          Properties:
+            X: =60
+            Y: =16
+            Width: =230
+            Height: =32
+            Text: =Text(varMonthAnchor, "mmmm yyyy")
+            Color: =gblTheme.Primary
+            Size: =18
+            FontWeight: =FontWeight.Bold
+            Font: =Font.'Segoe UI'
+            VerticalAlign: =VerticalAlign.Middle
+      - cirNextBg:
+          Control: Circle@2.3.0
+          Properties:
+            X: =296
+            Y: =18
+            Width: =28
+            Height: =28
+            Fill: =gblTheme.Card
+            BorderColor: =gblTheme.Border
+            BorderThickness: =1
+      - icoNextMonth:
+          Control: Icon@2.5.0
+          Variant: ChevronRight
+          Properties:
+            X: =304
+            Y: =26
+            Width: =12
+            Height: =12
+            Icon: =Icon.ChevronRight
+            Color: =gblTheme.Primary
+            OnSelect: |
+              =Set(varMonthAnchor, DateAdd(varMonthAnchor, 1, TimeUnit.Months));
+              Select(btnLoadMonth)
+      - drpYear:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            X: =714
+            Y: =18
+            Width: =104
+            Height: =28
+            Items: =ForAll(Sequence(7, Year(Today()) - 3, 1) As S, { Yr: S.Value })
+            Value: ="Yr"
+            Default: =Year(varMonthAnchor)
+            Size: =10
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.Primary
+            BorderColor: =gblTheme.Border
+            OnChange: |
+              =Set(varMonthAnchor, Date(Self.Selected.Yr, Month(varMonthAnchor), 1));
+              Select(btnLoadMonth)
+      - drpMonth:
+          Control: Classic/DropDown@2.3.1
+          Properties:
+            X: =828
+            Y: =18
+            Width: =124
+            Height: =28
+            Items: |
+              =ForAll(
+                  Sequence(12) As S,
+                  { Num: S.Value, Nm: Text(Date(2000, S.Value, 1), "mmmm") }
+              )
+            Value: ="Nm"
+            Default: =Text(varMonthAnchor, "mmmm")
+            Size: =10
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.Primary
+            BorderColor: =gblTheme.Border
+            OnChange: |
+              =Set(varMonthAnchor, Date(Year(varMonthAnchor), Self.Selected.Num, 1));
+              Select(btnLoadMonth)
+      - lblRegionPill:
+          Control: Label@2.5.1
+          Properties:
+            X: =962
+            Y: =18
+            Width: =134
+            Height: =28
+            Text: =Upper(varRegion.Value) & " REGION"
+            Fill: =gblTheme.PrimarySoft
+            Color: =gblTheme.Primary
+            Size: =9
+            FontWeight: =FontWeight.Bold
+            Font: =Font.'Segoe UI'
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+            RadiusTopLeft: =6
+            RadiusTopRight: =6
+            RadiusBottomLeft: =6
+            RadiusBottomRight: =6
+
+
+# =============================================================
+# BLOCK 3 - WEEKDAY HEADER + CALENDAR GRID
+# Paste INSIDE conCalendarCard
+# =============================================================
+- galWeekdays:
+    Control: Gallery@2.15.0
+    Variant: Vertical
+    Properties:
+      X: =0
+      Y: =64
+      Width: =1114
+      Height: =34
+      Items: =["SUN","MON","TUE","WED","THU","FRI","SAT"]
+      WrapCount: =7
+      TemplateSize: =34
+      TemplatePadding: =0
+      ShowScrollbar: =false
+      Fill: =RGBA(250, 251, 252, 1)
+    Children:
+      - lblWeekday:
+          Control: Label@2.5.1
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.TemplateWidth
+            Height: =34
+            Text: =ThisItem.Value
+            Color: =gblTheme.TextMuted
+            Size: =9
+            FontWeight: =FontWeight.Bold
+            Font: =Font.'Segoe UI'
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+
+- galCalendar:
+    Control: Gallery@2.15.0
+    Variant: Vertical
+    Properties:
+      X: =0
+      Y: =98
+      Width: =1114
+      Height: =438
+      WrapCount: =7
+      TemplateSize: =73
+      TemplatePadding: =0
+      ShowScrollbar: =false
+      Items: |
+        =ForAll(
+            Sequence(42, 0, 1) As Idx,
+            With(
+                { _d: DateAdd(varGridStart, Idx.Value, TimeUnit.Days) },
+                With(
+                    { _mtg: LookUp(colMeetings, MeetingDate = _d) },
+                    {
+                        CellDate: _d,
+                        DayNum: Day(_d),
+                        InMonth: Month(_d) = Month(varMonthAnchor) && Year(_d) = Year(varMonthAnchor),
+                        IsToday: _d = Today(),
+                        MeetingID: _mtg.'Regional Meeting',
+                        Title: _mtg.Name,
+                        HasMeeting: !IsBlank(_mtg.'Regional Meeting'),
+                        TotalActions: CountRows(
+                            Filter(colActions, 'Regional Meeting'.'Regional Meeting' = _mtg.'Regional Meeting')
+                        ),
+                        OpenActions: CountRows(
+                            Filter(
+                                colActions,
+                                'Regional Meeting'.'Regional Meeting' = _mtg.'Regional Meeting',
+                                Status <> 'Status (Meeting Action Items)'.Completed
+                            )
+                        )
+                    }
+                )
+            )
+        )
+    Children:
+      - recCellBg:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.TemplateWidth
+            Height: =73
+            BorderColor: =gblTheme.GridLine
+            BorderThickness: =1
+            Fill: |
+              =If(
+                  !ThisItem.InMonth, ColorValue("#FBFCFD"),
+                  ThisItem.CellDate = varSelectedDate, gblTheme.PrimarySoft,
+                  gblTheme.Card
+              )
+      - cirDayNum:
+          Control: Circle@2.3.0
+          Properties:
+            X: =6
+            Y: =5
+            Width: =22
+            Height: =22
+            Visible: =ThisItem.CellDate = varSelectedDate
+            Fill: =gblTheme.Primary
+      - lblDayNum:
+          Control: Label@2.5.1
+          Properties:
+            X: =6
+            Y: =5
+            Width: =22
+            Height: =22
+            Text: =ThisItem.DayNum
+            Size: =9
+            Font: =Font.'Segoe UI'
+            FontWeight: =If(ThisItem.IsToday, FontWeight.Bold, FontWeight.Normal)
+            Align: =Align.Center
+            VerticalAlign: =VerticalAlign.Middle
+            Color: |
+              =If(
+                  ThisItem.CellDate = varSelectedDate, Color.White,
+                  !ThisItem.InMonth, gblTheme.TextFaint,
+                  gblTheme.TextDark
+              )
+      - recChipNotes:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =50
+            Y: =7
+            Width: =20
+            Height: =18
+            Visible: =ThisItem.HasMeeting
+            Fill: =gblTheme.PrimarySoft
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+      - icoChipNotes:
+          Control: Icon@2.5.0
+          Variant: Document
+          Properties:
+            X: =53
+            Y: =9
+            Width: =14
+            Height: =14
+            Visible: =ThisItem.HasMeeting
+            Icon: =Icon.Document
+            Color: =gblTheme.Primary
+      - recChipActions:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =74
+            Y: =7
+            Width: =20
+            Height: =18
+            Visible: =ThisItem.TotalActions > 0
+            Fill: =If(ThisItem.OpenActions > 0, gblTheme.OrangeSoft, ColorValue("#E7F6EC"))
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+      - icoChipActions:
+          Control: Icon@2.5.0
+          Variant: CheckBadge
+          Properties:
+            X: =77
+            Y: =9
+            Width: =14
+            Height: =14
+            Visible: =ThisItem.TotalActions > 0
+            Icon: =Icon.CheckBadge
+            Color: =If(ThisItem.OpenActions > 0, gblTheme.Orange, gblTheme.Green)
+      - recEventCard:
+          Control: Rectangle@2.3.0
+          Properties:
+            X: =6
+            Y: =31
+            Width: =Parent.TemplateWidth - 14
+            Height: =36
+            Visible: =ThisItem.HasMeeting
+            Fill: =gblTheme.Card
+            BorderColor: =gblTheme.Border
+            BorderThickness: =1
+            RadiusTopLeft: =4
+            RadiusTopRight: =4
+            RadiusBottomLeft: =4
+            RadiusBottomRight: =4
+      - lblEventTitle:
+          Control: Label@2.5.1
+          Properties:
+            X: =11
+            Y: =33
+            Width: =Parent.TemplateWidth - 24
+            Height: =16
+            Visible: =ThisItem.HasMeeting
+            Text: =ThisItem.Title
+            Size: =8
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.TextDark
+            VerticalAlign: =VerticalAlign.Middle
+      - cirActionDot:
+          Control: Circle@2.3.0
+          Properties:
+            X: =12
+            Y: =54
+            Width: =6
+            Height: =6
+            Visible: =ThisItem.TotalActions > 0
+            Fill: =If(ThisItem.OpenActions > 0, gblTheme.Orange, gblTheme.Green)
+      - lblActionCount:
+          Control: Label@2.5.1
+          Properties:
+            X: =22
+            Y: =50
+            Width: =90
+            Height: =14
+            Visible: =ThisItem.TotalActions > 0
+            Text: =ThisItem.TotalActions & If(ThisItem.TotalActions = 1, " action", " actions")
+            Size: =8
+            Font: =Font.'Segoe UI'
+            Color: =If(ThisItem.OpenActions > 0, gblTheme.Orange, gblTheme.Green)
+            VerticalAlign: =VerticalAlign.Middle
+      - btnCellHit:
+          Control: Classic/Button@2.2.0
+          Properties:
+            X: =0
+            Y: =0
+            Width: =Parent.TemplateWidth
+            Height: =73
+            Text: =""
+            Fill: =RGBA(0, 0, 0, 0)
+            HoverFill: =RGBA(21, 101, 192, 0.04)
+            PressedFill: =RGBA(21, 101, 192, 0.08)
+            BorderThickness: =0
+            OnSelect: |
+              =Set(varSelectedDate, ThisItem.CellDate);
+              Set(varCurrentMeeting, LookUp(colMeetings, MeetingDate = ThisItem.CellDate));
+              ClearCollect(
+                  colEditActions,
+                  ForAll(
+                      Filter(
+                          colActions,
+                          'Regional Meeting'.'Regional Meeting' = varCurrentMeeting.'Regional Meeting'
+                      ) As A,
+                      {
+                          TempID: GUID(),
+                          ActionRec: A,
+                          Description: A.Name,
+                          AssignedTo: A.AssignedTo,
+                          DueDate: A.DueDate,
+                          Status: A.Status,
+                          Priority: A.Priority,
+                          IsDeleted: false
+                      }
+                  )
+              );
+              Set(varShowModal, true);
+              Reset(txtMeetingTitle);
+              Reset(txtRecap)
+
+
+# =============================================================
+# BLOCK 4 - LEGEND BAR
+# Paste INSIDE conCalendarCard
+# =============================================================
+- conLegend:
+    Control: GroupContainer@1.3.0
+    Variant: ManualLayout
+    Properties:
+      X: =0
+      Y: =540
+      Width: =1114
+      Height: =40
+      Fill: =RGBA(250, 251, 252, 1)
+    Children:
+      - lblLegendPrefix:
+          Control: Label@2.5.1
+          Properties:
+            X: =16
+            Y: =10
+            Width: =120
+            Height: =20
+            Text: ="CALENDAR LEGEND:"
+            Size: =8
+            FontWeight: =FontWeight.Bold
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.TextMuted
+            VerticalAlign: =VerticalAlign.Middle
+      - cirLegendNotes:
+          Control: Circle@2.3.0
+          Properties:
+            X: =148
+            Y: =17
+            Width: =7
+            Height: =7
+            Fill: =gblTheme.Primary
+      - lblLegendNotes:
+          Control: Label@2.5.1
+          Properties:
+            X: =160
+            Y: =10
+            Width: =100
+            Height: =20
+            Text: ="Meeting Notes"
+            Size: =8
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.TextMuted
+            VerticalAlign: =VerticalAlign.Middle
+      - cirLegendOpen:
+          Control: Circle@2.3.0
+          Properties:
+            X: =262
+            Y: =17
+            Width: =7
+            Height: =7
+            Fill: =gblTheme.Orange
+      - lblLegendOpen:
+          Control: Label@2.5.1
+          Properties:
+            X: =274
+            Y: =10
+            Width: =100
+            Height: =20
+            Text: ="Open Actions"
+            Size: =8
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.TextMuted
+            VerticalAlign: =VerticalAlign.Middle
+      - cirLegendDone:
+          Control: Circle@2.3.0
+          Properties:
+            X: =376
+            Y: =17
+            Width: =7
+            Height: =7
+            Fill: =gblTheme.Green
+      - lblLegendDone:
+          Control: Label@2.5.1
+          Properties:
+            X: =388
+            Y: =10
+            Width: =140
+            Height: =20
+            Text: ="All Actions Completed"
+            Size: =8
+            Font: =Font.'Segoe UI'
+            Color: =gblTheme.TextMuted
+            VerticalAlign: =VerticalAlign.Middle
+
+
+# =============================================================
+# BLOCK 5 - MODAL  (paste onto SCREEN ROOT, not conPageRoot,
+#                    so the scrim also dims the left nav)
+# =============================================================
+- conModalOverlay:
+    Control: GroupContainer@1.3.0
+    Variant: ManualLayout
+    Properties:
+      X: =0
+      Y: =0
+      Width: =1366
+      Height: =768
+      Visible: =varShowModal
+      Fill: =RGBA(0, 0, 0, 0.45)
+    Children:
+      - conModalCard:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            X: =383
+            Y: =50
+            Width: =600
+            Height: =668
+            Fill: =gblTheme.Card
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+          Children:
+            # ---------- HEADER ----------
+            - recModalHeaderBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =0
+                  Width: =600
+                  Height: =84
+                  Fill: =gblTheme.Card
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+            - icoModalCal:
+                Control: Icon@2.5.0
+                Variant: Calendar
+                Properties:
+                  X: =20
+                  Y: =16
+                  Width: =13
+                  Height: =13
+                  Icon: =Icon.CalendarBlank
+                  Color: =gblTheme.TextMuted
+            - lblModalMeta:
+                Control: Label@2.5.1
+                Properties:
+                  X: =38
+                  Y: =12
+                  Width: =230
+                  Height: =20
+                  Text: =Text(varSelectedDate, "dddd, mmmm d, yyyy")
+                  Size: =9
+                  Font: =Font.'Segoe UI'
+                  Color: =gblTheme.TextMuted
+                  VerticalAlign: =VerticalAlign.Middle
+            - lblModalDot:
+                Control: Label@2.5.1
+                Properties:
+                  X: =264
+                  Y: =12
+                  Width: =12
+                  Height: =20
+                  Text: ="•"
+                  Size: =9
+                  Color: =gblTheme.TextFaint
+                  Align: =Align.Center
+                  VerticalAlign: =VerticalAlign.Middle
+            - icoModalPin:
+                Control: Icon@2.5.0
+                Variant: Location
+                Properties:
+                  X: =280
+                  Y: =16
+                  Width: =13
+                  Height: =13
+                  Icon: =Icon.Location
+                  Color: =gblTheme.TextMuted
+            - lblModalRegion:
+                Control: Label@2.5.1
+                Properties:
+                  X: =298
+                  Y: =12
+                  Width: =120
+                  Height: =20
+                  Text: =varRegion.Value
+                  Size: =9
+                  Font: =Font.'Segoe UI'
+                  Color: =gblTheme.TextMuted
+                  VerticalAlign: =VerticalAlign.Middle
+            - txtMeetingTitle:
+                Control: Classic/TextInput@2.3.2
+                Properties:
+                  X: =16
+                  Y: =38
+                  Width: =520
+                  Height: =34
+                  Default: =Coalesce(varCurrentMeeting.Name, varRegion.Value & " Bi-Weekly Sync")
+                  HintText: ="Meeting Title"
+                  Size: =14
+                  FontWeight: =FontWeight.Semibold
+                  Font: =Font.'Segoe UI'
+                  Color: =gblTheme.TextDark
+                  BorderThickness: =0
+                  Fill: =RGBA(0, 0, 0, 0)
+            - icoModalClose:
+                Control: Icon@2.5.0
+                Variant: Cancel
+                Properties:
+                  X: =562
+                  Y: =16
+                  Width: =16
+                  Height: =16
+                  Icon: =Icon.Cancel
+                  Color: =gblTheme.TextMuted
+                  OnSelect: |
+                    =Set(varShowModal, false);
+                    Clear(colEditActions);
+                    Set(varCurrentMeeting, Blank());
+                    Set(varSelectedDate, Blank())
+
+            # ---------- BODY ----------
+            - recModalBodyBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =84
+                  Width: =600
+                  Height: =520
+                  Fill: =ColorValue("#F7F8FA")
+
+            - conRecapCard:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  X: =16
+                  Y: =96
+                  Width: =568
+                  Height: =206
+                  Fill: =gblTheme.Card
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                Children:
+                  - icoRecap:
+                      Control: Icon@2.5.0
+                      Variant: Document
+                      Properties:
+                        X: =16
+                        Y: =14
+                        Width: =16
+                        Height: =16
+                        Icon: =Icon.Document
+                        Color: =gblTheme.Primary
+                  - lblRecapHeader:
+                      Control: Label@2.5.1
+                      Properties:
+                        X: =38
+                        Y: =10
+                        Width: =280
+                        Height: =24
+                        Text: ="Meeting Recap / Copilot Notes"
+                        Size: =11
+                        FontWeight: =FontWeight.Bold
+                        Font: =Font.'Segoe UI'
+                        Color: =gblTheme.Primary
+                        VerticalAlign: =VerticalAlign.Middle
+                  - btnPasteHint:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        X: =398
+                        Y: =10
+                        Width: =154
+                        Height: =24
+                        Text: ="Paste from Teams Copilot"
+                        Size: =8
+                        Font: =Font.'Segoe UI'
+                        Fill: =gblTheme.PrimarySoft
+                        Color: =gblTheme.Primary
+                        BorderThickness: =0
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        OnSelect: |
+                          =SetFocus(txtRecap);
+                          Notify("Press Ctrl+V to paste your Copilot summary.", NotificationType.Information, 2500)
+                  - lblRecapSub:
+                      Control: Label@2.5.1
+                      Properties:
+                        X: =16
+                        Y: =36
+                        Width: =480
+                        Height: =18
+                        Text: ="Paste the complete meeting summary, discussion points, and decisions here."
+                        Size: =9
+                        Font: =Font.'Segoe UI'
+                        Color: =gblTheme.TextMuted
+                        VerticalAlign: =VerticalAlign.Middle
+                  - txtRecap:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        X: =16
+                        Y: =58
+                        Width: =536
+                        Height: =134
+                        Mode: =TextMode.MultiLine
+                        Default: =varCurrentMeeting.MeetingRecap
+                        Size: =10
+                        Font: =Font.'Segoe UI'
+                        Color: =gblTheme.TextDark
+                        BorderColor: =gblTheme.Primary
+                        BorderThickness: =1
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+
+            - conActionsCard:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  X: =16
+                  Y: =314
+                  Width: =568
+                  Height: =278
+                  Fill: =gblTheme.Card
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                Children:
+                  - icoActions:
+                      Control: Icon@2.5.0
+                      Variant: CheckBadge
+                      Properties:
+                        X: =16
+                        Y: =14
+                        Width: =16
+                        Height: =16
+                        Icon: =Icon.CheckBadge
+                        Color: =gblTheme.Primary
+                  - lblActionsHeader:
+                      Control: Label@2.5.1
+                      Properties:
+                        X: =38
+                        Y: =10
+                        Width: =200
+                        Height: =24
+                        Text: ="Action Items"
+                        Size: =11
+                        FontWeight: =FontWeight.Bold
+                        Font: =Font.'Segoe UI'
+                        Color: =gblTheme.Primary
+                        VerticalAlign: =VerticalAlign.Middle
+                  - btnAddAction:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        X: =438
+                        Y: =10
+                        Width: =114
+                        Height: =26
+                        Text: ="+ Add Action"
+                        Size: =9
+                        Font: =Font.'Segoe UI'
+                        Fill: =gblTheme.Card
+                        Color: =gblTheme.TextDark
+                        BorderColor: =gblTheme.Border
+                        BorderThickness: =1
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        OnSelect: |
+                          =Collect(
+                              colEditActions,
+                              {
+                                  TempID: GUID(),
+                                  ActionRec: Blank(),
+                                  Description: "",
+                                  AssignedTo: "",
+                                  DueDate: varSelectedDate,
+                                  Status: LookUp(Choices('Meeting Action Items'.Status), Value = "Not Started"),
+                                  Priority: LookUp(Choices('Meeting Action Items'.Priority), Value = "Medium"),
+                                  IsDeleted: false
+                              }
+                          );
+                          ScrollToItem(galActionItems, CountRows(Filter(colEditActions, !IsDeleted)))
+                  - galActionItems:
+                      Control: Gallery@2.15.0
+                      Variant: Vertical
+                      Properties:
+                        X: =12
+                        Y: =44
+                        Width: =544
+                        Height: =222
+                        TemplateSize: =184
+                        TemplatePadding: =4
+                        ShowScrollbar: =true
+                        Items: =Filter(colEditActions, !IsDeleted)
+                      Children:
+                        - recActionCard:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              X: =4
+                              Y: =0
+                              Width: =524
+                              Height: =176
+                              Fill: =ColorValue("#FAFBFC")
+                              BorderColor: =gblTheme.Border
+                              BorderThickness: =1
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                        - lblLblDesc:
+                            Control: Label@2.5.1
+                            Properties:
+                              X: =18
+                              Y: =10
+                              Width: =200
+                              Height: =16
+                              Text: ="ACTION DESCRIPTION"
+                              Size: =7
+                              FontWeight: =FontWeight.Bold
+                              Font: =Font.'Segoe UI'
+                              Color: =gblTheme.TextMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                        - txtActionDesc:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              X: =18
+                              Y: =28
+                              Width: =466
+                              Height: =28
+                              Default: =ThisItem.Description
+                              HintText: ="Describe the action"
+                              Size: =9
+                              Font: =Font.'Segoe UI'
+                              BorderColor: =ColorValue("#D8DEE6")
+                              BorderThickness: =1
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              OnChange: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { Description: Self.Text }
+                                )
+                        - icoDeleteAction:
+                            Control: Icon@2.5.0
+                            Variant: Trash
+                            Properties:
+                              X: =494
+                              Y: =33
+                              Width: =16
+                              Height: =16
+                              Icon: =Icon.Trash
+                              Color: =gblTheme.Danger
+                              OnSelect: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { IsDeleted: true }
+                                )
+                        - lblLblAssigned:
+                            Control: Label@2.5.1
+                            Properties:
+                              X: =18
+                              Y: =64
+                              Width: =160
+                              Height: =16
+                              Text: ="ASSIGNED TO"
+                              Size: =7
+                              FontWeight: =FontWeight.Bold
+                              Font: =Font.'Segoe UI'
+                              Color: =gblTheme.TextMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                        - txtAssignedTo:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              X: =18
+                              Y: =82
+                              Width: =222
+                              Height: =28
+                              Default: =ThisItem.AssignedTo
+                              HintText: ="Name"
+                              Size: =9
+                              Font: =Font.'Segoe UI'
+                              BorderColor: =ColorValue("#D8DEE6")
+                              BorderThickness: =1
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              OnChange: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { AssignedTo: Self.Text }
+                                )
+                        - lblLblDue:
+                            Control: Label@2.5.1
+                            Properties:
+                              X: =256
+                              Y: =64
+                              Width: =160
+                              Height: =16
+                              Text: ="DUE DATE"
+                              Size: =7
+                              FontWeight: =FontWeight.Bold
+                              Font: =Font.'Segoe UI'
+                              Color: =gblTheme.TextMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                        - dteDueDate:
+                            Control: Classic/DatePicker@2.6.0
+                            Properties:
+                              X: =256
+                              Y: =82
+                              Width: =228
+                              Height: =28
+                              DefaultDate: =ThisItem.DueDate
+                              Format: =DateTimeFormat.ShortDate
+                              Size: =9
+                              Font: =Font.'Segoe UI'
+                              BorderColor: =ColorValue("#D8DEE6")
+                              OnChange: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { DueDate: Self.SelectedDate }
+                                )
+                        - lblLblStatus:
+                            Control: Label@2.5.1
+                            Properties:
+                              X: =18
+                              Y: =116
+                              Width: =160
+                              Height: =16
+                              Text: ="STATUS"
+                              Size: =7
+                              FontWeight: =FontWeight.Bold
+                              Font: =Font.'Segoe UI'
+                              Color: =gblTheme.TextMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                        - drpStatus:
+                            Control: Classic/DropDown@2.3.1
+                            Properties:
+                              X: =18
+                              Y: =134
+                              Width: =222
+                              Height: =28
+                              Items: =Choices('Meeting Action Items'.Status)
+                              Default: =ThisItem.Status
+                              Size: =9
+                              Font: =Font.'Segoe UI'
+                              BorderColor: =ColorValue("#D8DEE6")
+                              OnChange: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { Status: Self.Selected }
+                                )
+                        - lblLblPriority:
+                            Control: Label@2.5.1
+                            Properties:
+                              X: =256
+                              Y: =116
+                              Width: =160
+                              Height: =16
+                              Text: ="PRIORITY"
+                              Size: =7
+                              FontWeight: =FontWeight.Bold
+                              Font: =Font.'Segoe UI'
+                              Color: =gblTheme.TextMuted
+                              VerticalAlign: =VerticalAlign.Middle
+                        - drpPriority:
+                            Control: Classic/DropDown@2.3.1
+                            Properties:
+                              X: =256
+                              Y: =134
+                              Width: =228
+                              Height: =28
+                              Items: =Choices('Meeting Action Items'.Priority)
+                              Default: =ThisItem.Priority
+                              Size: =9
+                              Font: =Font.'Segoe UI'
+                              BorderColor: =ColorValue("#D8DEE6")
+                              OnChange: |
+                                =Patch(
+                                    colEditActions,
+                                    LookUp(colEditActions, TempID = ThisItem.TempID),
+                                    { Priority: Self.Selected }
+                                )
+
+            # ---------- FOOTER ----------
+            - recModalFooterBg:
+                Control: Rectangle@2.3.0
+                Properties:
+                  X: =0
+                  Y: =604
+                  Width: =600
+                  Height: =64
+                  Fill: =gblTheme.Card
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+            - btnCancel:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  X: =354
+                  Y: =622
+                  Width: =92
+                  Height: =32
+                  Text: ="Cancel"
+                  Size: =10
+                  Font: =Font.'Segoe UI'
+                  Fill: =gblTheme.Card
+                  Color: =gblTheme.TextDark
+                  BorderColor: =gblTheme.Border
+                  BorderThickness: =1
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  OnSelect: |
+                    =Set(varShowModal, false);
+                    Clear(colEditActions);
+                    Set(varCurrentMeeting, Blank());
+                    Set(varSelectedDate, Blank())
+            - btnSaveMeeting:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  X: =456
+                  Y: =622
+                  Width: =128
+                  Height: =32
+                  Text: ="Save Meeting Notes"
+                  Size: =10
+                  Font: =Font.'Segoe UI'
+                  Fill: =gblTheme.Primary
+                  Color: =Color.White
+                  BorderThickness: =0
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  DisplayMode: =If(IsBlank(Trim(txtMeetingTitle.Text)), DisplayMode.Disabled, DisplayMode.Edit)
+                  OnSelect: |
+                    =Set(
+                        varSavedMeeting,
+                        Patch(
+                            'Regional Meetings',
+                            Coalesce(varCurrentMeeting, Defaults('Regional Meetings')),
+                            {
+                                Name: txtMeetingTitle.Text,
+                                MeetingDate: varSelectedDate,
+                                Region: varRegion,
+                                MeetingRecap: txtRecap.Text
+                            }
+                        )
+                    );
+                    ForAll(
+                        Filter(colEditActions, !IsDeleted, !IsBlank(Trim(Description))) As A,
+                        Patch(
+                            'Meeting Action Items',
+                            Coalesce(A.ActionRec, Defaults('Meeting Action Items')),
+                            {
+                                Name: A.Description,
+                                'Regional Meeting': varSavedMeeting,
+                                AssignedTo: A.AssignedTo,
+                                DueDate: A.DueDate,
+                                Status: A.Status,
+                                Priority: A.Priority,
+                                MeetingRegion: varRegion,
+                                MeetingDate: varSelectedDate
+                            }
+                        )
+                    );
+                    ForAll(
+                        Filter(colEditActions, IsDeleted, !IsBlank(ActionRec)) As D,
+                        Remove('Meeting Action Items', D.ActionRec)
+                    );
+                    If(
+                        IsEmpty(Errors('Regional Meetings')) && IsEmpty(Errors('Meeting Action Items')),
+                        Select(btnLoadMonth);
+                        Set(varShowModal, false);
+                        Clear(colEditActions);
+                        Notify("Meeting notes saved.", NotificationType.Success, 2000),
+                        Notify(
+                            "Save failed: " & First(Errors('Regional Meetings')).Message,
+                            NotificationType.Error
+                        )
+                    )
+
+
+# =============================================================
+# BLOCK 6 - SCREEN PROPERTIES  (set manually, not pasteable)
+# =============================================================
+# scrRegionalMeetingNotes.Fill      = gblTheme.PageBg
+# scrRegionalMeetingNotes.OnVisible =
+#   Set(varRegion, Coalesce(varRegion, First(Choices('Regional Meetings'.Region))));
+#   Set(varMonthAnchor, Date(Year(Today()), Month(Today()), 1));
+#   Set(varSelectedDate, Blank());
+#   Set(varShowModal, false);
+#   Set(varSearch, "");
+#   Select(btnLoadMonth)
+#
+# App.OnStart -> add gblTheme:
+#   Set(
+#       gblTheme,
+#       {
+#           NavBg:       ColorValue("#131C2E"),
+#           PageBg:      ColorValue("#F4F6F9"),
+#           Card:        ColorValue("#FFFFFF"),
+#           Border:      ColorValue("#E5E9EF"),
+#           GridLine:    ColorValue("#E8ECF1"),
+#           Primary:     ColorValue("#1565C0"),
+#           PrimarySoft: ColorValue("#E3EFFB"),
+#           HeaderStrip: ColorValue("#F2F7FD"),
+#           TextDark:    ColorValue("#1A2332"),
+#           TextMuted:   ColorValue("#6B7785"),
+#           TextFaint:   ColorValue("#9AA4B2"),
+#           Orange:      ColorValue("#F59E0B"),
+#           OrangeSoft:  ColorValue("#FEF3E2"),
+#           Green:       ColorValue("#16A34A"),
+#           Danger:      ColorValue("#DC2626")
+#       }
+#   )
