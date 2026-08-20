@@ -1,0 +1,9 @@
+- lblSmokeTest:
+    Control: Label
+    Properties:
+      X: =40
+      Y: =40
+      Width: =300
+      Height: =40
+      Text: ="Paste works"
+      Size: =16
