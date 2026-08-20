@@ -77,8 +77,8 @@
       OnSelect: |
         =Set(varCalMonth, Date(Year(Today()), Month(Today()), 1));
         Set(varCalSelected, Today())
-- recPrevBg:
-    Control: Rectangle@2.3.0
+- cirPrevBg:
+    Control: Circle@2.3.0
     Properties:
       X: =Parent.Width - 104
       Y: =28
@@ -109,8 +109,8 @@
                 TimeUnit.Months
             )
         )
-- recNextBg:
-    Control: Rectangle@2.3.0
+- cirNextBg:
+    Control: Circle@2.3.0
     Properties:
       X: =Parent.Width - 64
       Y: =28
@@ -259,8 +259,8 @@
                   RGBA(253, 253, 254, 1),
                   RGBA(255, 255, 255, 1)
               )
-      - recTodayRing:
-          Control: Rectangle@2.3.0
+      - cirTodayRing:
+          Control: Circle@2.3.0
           Properties:
             X: =8
             Y: =7
@@ -269,8 +269,8 @@
             Visible: =ThisItem.IsToday && ThisItem.CellDate <> Coalesce(varCalSelected, Today())
             Fill: =RGBA(0, 0, 0, 0)
             BorderColor: =RGBA(21, 101, 192, 1)
-      - recDaySelected:
-          Control: Rectangle@2.3.0
+      - cirDaySelected:
+          Control: Circle@2.3.0
           Properties:
             X: =8
             Y: =7
@@ -313,8 +313,8 @@
                   RGBA(21, 101, 192, 1),
                   RGBA(31, 41, 55, 1)
               )
-      - recCountBadge:
-          Control: Rectangle@2.3.0
+      - cirCountBadge:
+          Control: Circle@2.3.0
           Properties:
             X: =Parent.TemplateWidth - 30
             Y: =11
@@ -457,4 +457,3 @@
       Color: =RGBA(178, 186, 199, 1)
       Align: =Align.Right
       VerticalAlign: =VerticalAlign.Middle
- 
