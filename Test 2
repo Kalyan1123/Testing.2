@@ -1,428 +1,50 @@
-- lblCalMonth:
-    Control: Label
+- lblClassicTest:
+    Control: Classic/Label
     Properties:
-      X: =28
-      Y: =18
-      Width: =340
-      Height: =36
-      Text: =Text(Coalesce(varCalMonth, Date(Year(Today()), Month(Today()), 1)), "mmmm yyyy")
-      Size: =20
-      FontWeight: =FontWeight.Semibold
-      Font: =Font.'Segoe UI'
-      Color: =ColorValue("#0F172A")
-      VerticalAlign: =VerticalAlign.Middle
-
-- lblCalSub:
-    Control: Label
+      X: =40
+      Y: =40
+      Width: =160
+      Height: =32
+      Text: ="Classic label"
+      Fill: =ColorValue("#E8F1FC")
+      RadiusTopLeft: =6
+- btnClassicTest:
+    Control: Classic/Button
     Properties:
-      X: =30
-      Y: =52
-      Width: =340
-      Height: =20
-      Text: ="Bi-weekly meeting notes"
-      Size: =9
-      Font: =Font.'Segoe UI'
-      Color: =ColorValue("#8A94A6")
-      VerticalAlign: =VerticalAlign.Middle
-
-- lblRegionPill:
-    Control: Label
+      X: =220
+      Y: =40
+      Width: =140
+      Height: =32
+      Text: ="Classic button"
+      RadiusTopLeft: =6
+- icoClassicTest:
+    Control: Classic/Icon
     Properties:
       X: =380
-      Y: =28
-      Width: =140
-      Height: =28
-      Text: =Upper(Coalesce(varCalRegion, "EMEA")) & " REGION"
-      Fill: =ColorValue("#E8F1FC")
-      Color: =ColorValue("#1565C0")
-      Size: =9
-      FontWeight: =FontWeight.Bold
-      Font: =Font.'Segoe UI'
-      Align: =Align.Center
-      VerticalAlign: =VerticalAlign.Middle
-      RadiusTopLeft: =6
-      RadiusTopRight: =6
-      RadiusBottomLeft: =6
-      RadiusBottomRight: =6
-
-- btnToday:
-    Control: Button
-    Properties:
-      X: =Parent.Width - 188
-      Y: =28
-      Width: =72
-      Height: =32
-      Text: ="Today"
-      Size: =10
-      Font: =Font.'Segoe UI'
-      Fill: =ColorValue("#FFFFFF")
-      HoverFill: =ColorValue("#F5F9FF")
-      Color: =ColorValue("#1565C0")
-      BorderColor: =ColorValue("#D7E3F4")
-      BorderThickness: =1
-      RadiusTopLeft: =8
-      RadiusTopRight: =8
-      RadiusBottomLeft: =8
-      RadiusBottomRight: =8
-      OnSelect: |
-        =Set(varCalMonth, Date(Year(Today()), Month(Today()), 1));
-        Set(varCalSelected, Today())
-
-- cirPrevBg:
-    Control: Circle
-    Properties:
-      X: =Parent.Width - 104
-      Y: =28
-      Width: =32
-      Height: =32
-      Fill: =ColorValue("#FFFFFF")
-      BorderColor: =ColorValue("#E4E9F0")
-      BorderThickness: =1
-
-- icoPrevMonth:
-    Control: Icon
-    Properties:
-      X: =Parent.Width - 94
-      Y: =38
-      Width: =12
-      Height: =12
+      Y: =40
+      Width: =24
+      Height: =24
       Icon: =Icon.ChevronLeft
       Color: =ColorValue("#1565C0")
-      OnSelect: |
-        =Set(
-            varCalMonth,
-            DateAdd(
-                Coalesce(varCalMonth, Date(Year(Today()), Month(Today()), 1)),
-                -1,
-                TimeUnit.Months
-            )
-        )
-
-- cirNextBg:
-    Control: Circle
-    Properties:
-      X: =Parent.Width - 64
-      Y: =28
-      Width: =32
-      Height: =32
-      Fill: =ColorValue("#FFFFFF")
-      BorderColor: =ColorValue("#E4E9F0")
-      BorderThickness: =1
-
-- icoNextMonth:
-    Control: Icon
-    Properties:
-      X: =Parent.Width - 54
-      Y: =38
-      Width: =12
-      Height: =12
-      Icon: =Icon.ChevronRight
-      Color: =ColorValue("#1565C0")
-      OnSelect: |
-        =Set(
-            varCalMonth,
-            DateAdd(
-                Coalesce(varCalMonth, Date(Year(Today()), Month(Today()), 1)),
-                1,
-                TimeUnit.Months
-            )
-        )
-
-- recHeaderRule:
-    Control: Rectangle
-    Properties:
-      X: =0
-      Y: =83
-      Width: =Parent.Width
-      Height: =1
-      Fill: =ColorValue("#EFF2F6")
-
-- galWeekdays:
+      OnSelect: =false
+- galTest:
     Control: Gallery
+    Variant: Vertical
     Properties:
-      X: =0
-      Y: =84
-      Width: =Parent.Width
-      Height: =34
+      X: =40
+      Y: =100
+      Width: =700
+      Height: =80
       WrapCount: =7
-      TemplateSize: =34
-      TemplatePadding: =0
-      ShowScrollbar: =false
-      Fill: =ColorValue("#FBFCFE")
-      Items: |
-        =Table(
-            { Nm: "SUN", Wknd: true },
-            { Nm: "MON", Wknd: false },
-            { Nm: "TUE", Wknd: false },
-            { Nm: "WED", Wknd: false },
-            { Nm: "THU", Wknd: false },
-            { Nm: "FRI", Wknd: false },
-            { Nm: "SAT", Wknd: true }
-        )
+      TemplateSize: =80
+      Items: =ForAll(Sequence(7, 1, 1) As I, { N: I.Value })
     Children:
-      - lblWeekday:
-          Control: Label
+      - lblCell:
+          Control: Classic/Label
           Properties:
             X: =0
             Y: =0
             Width: =Parent.TemplateWidth
-            Height: =34
-            Text: =ThisItem.Nm
-            Size: =9
-            FontWeight: =FontWeight.Bold
-            Font: =Font.'Segoe UI'
-            Color: =If(ThisItem.Wknd, ColorValue("#B2BAC7"), ColorValue("#8A94A6"))
+            Height: =80
+            Text: =ThisItem.N
             Align: =Align.Center
-            VerticalAlign: =VerticalAlign.Middle
-
-- galCalendar:
-    Control: Gallery
-    Properties:
-      X: =0
-      Y: =118
-      Width: =Parent.Width
-      Height: =Parent.Height - 152
-      WrapCount: =7
-      TemplateSize: =(Parent.Height - 152) / 6
-      TemplatePadding: =0
-      ShowScrollbar: =false
-      Items: |
-        =With(
-            { _a: Coalesce(varCalMonth, Date(Year(Today()), Month(Today()), 1)) },
-            With(
-                {
-                    _start: DateAdd(_a, -(Weekday(_a, StartOfWeek.Sunday) - 1), TimeUnit.Days),
-                    _src: Table(
-                        { EventDate: Today(),                             Title: "EMEA Bi-Weekly Sync" },
-                        { EventDate: Today(),                             Title: "Pipeline Review" },
-                        { EventDate: DateAdd(Today(), 3, TimeUnit.Days),  Title: "APAC Standup" },
-                        { EventDate: DateAdd(Today(), -4, TimeUnit.Days), Title: "Compliance Sync" },
-                        { EventDate: DateAdd(Today(), 9, TimeUnit.Days),  Title: "Quarterly Planning" }
-                    )
-                },
-                ForAll(
-                    Sequence(42, 0, 1) As Idx,
-                    With(
-                        { _d: DateAdd(_start, Idx.Value, TimeUnit.Days) },
-                        With(
-                            { _evts: Filter(_src, EventDate = _d) },
-                            {
-                                CellDate: _d,
-                                DayNum: Day(_d),
-                                InMonth: Month(_d) = Month(_a) && Year(_d) = Year(_a),
-                                IsToday: _d = Today(),
-                                IsWeekend: Weekday(_d, StartOfWeek.Sunday) = 1 || Weekday(_d, StartOfWeek.Sunday) = 7,
-                                EvtCount: CountRows(_evts),
-                                TopTitle: First(_evts).Title,
-                                MoreCount: Max(CountRows(_evts) - 1, 0)
-                            }
-                        )
-                    )
-                )
-            )
-        )
-    Children:
-
-      - recCellBg:
-          Control: Rectangle
-          Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.TemplateWidth
-            Height: =Parent.TemplateHeight
-            BorderColor: =ColorValue("#EFF2F6")
-            BorderThickness: =1
-            Fill: |
-              =If(
-                  !ThisItem.InMonth,                                      ColorValue("#FAFBFC"),
-                  ThisItem.CellDate = Coalesce(varCalSelected, Today()),  ColorValue("#F2F8FF"),
-                  ThisItem.IsToday,                                       ColorValue("#F7FBFF"),
-                  ThisItem.IsWeekend,                                     ColorValue("#FDFDFE"),
-                  ColorValue("#FFFFFF")
-              )
-
-      - cirTodayRing:
-          Control: Circle
-          Properties:
-            X: =8
-            Y: =7
-            Width: =26
-            Height: =26
-            Visible: =ThisItem.IsToday && ThisItem.CellDate <> Coalesce(varCalSelected, Today())
-            Fill: =RGBA(0, 0, 0, 0)
-            BorderColor: =ColorValue("#1565C0")
-            BorderThickness: =1
-
-      - cirDaySelected:
-          Control: Circle
-          Properties:
-            X: =8
-            Y: =7
-            Width: =26
-            Height: =26
-            Visible: =ThisItem.CellDate = Coalesce(varCalSelected, Today())
-            Fill: =ColorValue("#1565C0")
-            BorderThickness: =0
-
-      - lblDayNum:
-          Control: Label
-          Properties:
-            X: =8
-            Y: =7
-            Width: =26
-            Height: =26
-            Text: =ThisItem.DayNum
-            Size: =10
-            Font: =Font.'Segoe UI'
-            Align: =Align.Center
-            VerticalAlign: =VerticalAlign.Middle
-            FontWeight: |
-              =If(
-                  ThisItem.IsToday || ThisItem.CellDate = Coalesce(varCalSelected, Today()),
-                  FontWeight.Semibold,
-                  FontWeight.Normal
-              )
-            Color: |
-              =If(
-                  ThisItem.CellDate = Coalesce(varCalSelected, Today()), ColorValue("#FFFFFF"),
-                  !ThisItem.InMonth,                                     ColorValue("#C2C9D4"),
-                  ThisItem.IsToday,                                      ColorValue("#1565C0"),
-                  ColorValue("#1F2937")
-              )
-
-      - cirCountBadge:
-          Control: Circle
-          Properties:
-            X: =Parent.TemplateWidth - 30
-            Y: =11
-            Width: =18
-            Height: =18
-            Visible: =ThisItem.EvtCount > 1
-            Fill: =ColorValue("#EEF2F7")
-            BorderThickness: =0
-
-      - lblCountBadge:
-          Control: Label
-          Properties:
-            X: =Parent.TemplateWidth - 30
-            Y: =11
-            Width: =18
-            Height: =18
-            Visible: =ThisItem.EvtCount > 1
-            Text: =ThisItem.EvtCount
-            Size: =7
-            FontWeight: =FontWeight.Bold
-            Font: =Font.'Segoe UI'
-            Color: =ColorValue("#6B7785")
-            Align: =Align.Center
-            VerticalAlign: =VerticalAlign.Middle
-
-      - recEvtPill:
-          Control: Rectangle
-          Properties:
-            X: =10
-            Y: =Parent.TemplateHeight * 0.45
-            Width: =Parent.TemplateWidth - 20
-            Height: =20
-            Visible: =ThisItem.EvtCount > 0
-            Fill: =ColorValue("#EEF4FC")
-            BorderThickness: =0
-            RadiusTopLeft: =4
-            RadiusTopRight: =4
-            RadiusBottomLeft: =4
-            RadiusBottomRight: =4
-
-      - recEvtAccent:
-          Control: Rectangle
-          Properties:
-            X: =10
-            Y: =Parent.TemplateHeight * 0.45
-            Width: =3
-            Height: =20
-            Visible: =ThisItem.EvtCount > 0
-            Fill: =ColorValue("#1565C0")
-            BorderThickness: =0
-
-      - lblEvtTitle:
-          Control: Label
-          Properties:
-            X: =18
-            Y: =Parent.TemplateHeight * 0.45
-            Width: =Parent.TemplateWidth - 30
-            Height: =20
-            Visible: =ThisItem.EvtCount > 0
-            Text: =ThisItem.TopTitle
-            Size: =8
-            Font: =Font.'Segoe UI'
-            Color: =ColorValue("#374151")
-            VerticalAlign: =VerticalAlign.Middle
-
-      - lblEvtMore:
-          Control: Label
-          Properties:
-            X: =14
-            Y: =Parent.TemplateHeight * 0.74
-            Width: =Parent.TemplateWidth - 24
-            Height: =14
-            Visible: =ThisItem.MoreCount > 0
-            Text: ="+" & ThisItem.MoreCount & " more"
-            Size: =7
-            Font: =Font.'Segoe UI'
-            Color: =ColorValue("#98A2B3")
-            VerticalAlign: =VerticalAlign.Middle
-
-      - btnCellHit:
-          Control: Button
-          Properties:
-            X: =0
-            Y: =0
-            Width: =Parent.TemplateWidth
-            Height: =Parent.TemplateHeight
-            Text: =""
-            Fill: =RGBA(0, 0, 0, 0)
-            HoverFill: =RGBA(21, 101, 192, 0.05)
-            PressedFill: =RGBA(21, 101, 192, 0.10)
-            BorderThickness: =0
-            OnSelect: |
-              =Set(varCalSelected, ThisItem.CellDate);
-              If(
-                  !ThisItem.InMonth,
-                  Set(varCalMonth, Date(Year(ThisItem.CellDate), Month(ThisItem.CellDate), 1))
-              )
-
-- recFooterRule:
-    Control: Rectangle
-    Properties:
-      X: =0
-      Y: =Parent.Height - 34
-      Width: =Parent.Width
-      Height: =1
-      Fill: =ColorValue("#EFF2F6")
-
-- lblFooterSelected:
-    Control: Label
-    Properties:
-      X: =28
-      Y: =Parent.Height - 33
-      Width: =420
-      Height: =32
-      Text: |
-        ="Selected: " & Text(Coalesce(varCalSelected, Today()), "dddd, d mmmm yyyy")
-      Size: =9
-      Font: =Font.'Segoe UI'
-      Color: =ColorValue("#6B7785")
-      VerticalAlign: =VerticalAlign.Middle
-
-- lblFooterHint:
-    Control: Label
-    Properties:
-      X: =Parent.Width - 340
-      Y: =Parent.Height - 33
-      Width: =312
-      Height: =32
-      Text: ="Click any date to select"
-      Size: =9
-      Font: =Font.'Segoe UI'
-      Color: =ColorValue("#B2BAC7")
-      Align: =Align.Right
-      VerticalAlign: =VerticalAlign.Middle
